@@ -161,8 +161,11 @@ class View {
     switchBoard(e) {
         if (!e.target.classList.contains('drop-list__link')) return;
 
-        console.log(e.currentTarget.id, e.target.id)
-        this.querySelector('.drop-list').classList.toggle('on');
+        document.querySelectorAll('.board').forEach((board, index) => {
+            if (e.currentTarget.id === board.id) this.controller.switchBoard(index, e.target.id);
+        })
+
+        e.currentTarget.querySelector('.drop-list').classList.toggle('on');
     }
 
     drawList(data) {
@@ -209,15 +212,16 @@ class View {
     }
 
     initDrawTask(data) {
-        const board = document.querySelectorAll('.board');
-        const boardList = board[0].querySelector('.board__list');
-        boardList.innerHTML = '';
+        const boards = document.querySelectorAll('.board');
 
-        data[0].issues.forEach(task => {
-            boardList.innerHTML += this.drawBoardTask(task);
-        });
+        data.forEach((list, index) => {
+            boards[index].querySelector('.board__list').innerHTML = '';
+            list.issues.forEach(task => {
+                boards[index].querySelector('.board__list').innerHTML += this.drawBoardTask(task);
+            })
+        })
 
-        board.forEach((board, i) => {
+        boards.forEach((board, i) => {
             if(i !== 0) {
                 board.querySelector('.drop-list__list').innerHTML = '';
                 board.querySelector('.drop-list__list').innerHTML += data[i - 1].issues.map(this.drawDropTask).join('');
@@ -231,7 +235,7 @@ class View {
             board.querySelector('.board__setting').addEventListener('click', this.deleteList.bind(this));
             if (i !== 0) {
                 board.addEventListener('click', this.showDropButton.bind(this));
-                board.addEventListener('click', this.switchBoard); //bind
+                board.addEventListener('click', this.switchBoard.bind(this)); //bind
                 board.querySelector('.drop-list').addEventListener('mouseover', this.showDropList);
                 board.querySelector('.drop-list').addEventListener('mouseout', this.hideDropList);
             }else {

@@ -19,6 +19,10 @@ class Controller {
         });
     }
 
+    switchBoard(index, boardId) {
+        this.model.switchBoard(index, boardId);
+    }
+
     preDraw() {
         this.model.sendLists()
     }

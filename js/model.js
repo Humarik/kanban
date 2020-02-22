@@ -4,22 +4,22 @@ class Model {
         this.dataMock = JSON.parse(localStorage.getItem('data')) || [
             {
                 title: 'Backlog',
-                id: 1,
+                id: 4,
                 issues: []
             },
             {
                 title: 'ready',
-                id: 2,
-                issues: []
-            },
-            {
-                title: 'In Progress',
                 id: 3,
                 issues: []
             },
             {
+                title: 'In Progress',
+                id: 2,
+                issues: []
+            },
+            {
                 title: 'Finished',
-                id: 4,
+                id: 1,
                 issues: []
             }
         ]
@@ -52,6 +52,15 @@ class Model {
         // this.mediator.publish('createList', this.dataMock);
     }
 
+    switchBoard(index, boardId) {
+        this.dataMock[index].issues.push(this.dataMock[index - 1].issues.find(task => task.id === +boardId));
+        this.dataMock[index - 1].issues = this.dataMock[index - 1].issues.filter(board => board.id !== +boardId);
+
+        localStorage.setItem('data', JSON.stringify(this.dataMock));
+        this.mediator.publish('drawTask', this.dataMock);
+        this.mediator.publish('setDisabled', this.dataMock);
+    }
+
     sendLists() {
         this.mediator.publish('createList', this.dataMock);
         this.mediator.publish('setDisabled', this.dataMock);
@@ -63,8 +72,6 @@ class Model {
             if (data[i].id > id) id = data[i].id;
         }
         return id + 1;
-        // need to fix check id in new cuz when someone clicks on <a> he doesn't get id cuz <a> doesn't have id only <li>
-        // i think I need to write id on <a> and make this tage on full space of li by css style
     }
 
     getTaskId(data) {
