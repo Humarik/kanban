@@ -11,26 +11,40 @@ class View {
         this.drawDescription = this.drawDescription.bind(this);
         this.getTextAreaValue = this.getTextAreaValue.bind(this);
         this.expandedGetAreaValue = this.expandedGetAreaValue.bind(this);
+        this.onChange = this.onChange.bind(this);
 
         this.mediator.addListener('drawTask', this.initDrawTask);
         this.mediator.addListener('createList', this.drawList);
         this.mediator.addListener('setDisabled', this.setDisabled);
         this.mediator.addListener('drawDescription', this.drawDescription);
 
-        this.controller.preDraw()
-        this.setListeners();
+        window.onload = () => {
+            this.onChange();
+        }
+
+        window.addEventListener('hashchange', this.onChange);
 
         this.getTextAreaValue = this.expandedGetAreaValue(this.getTextAreaValue);
 
         this.createListButton.addEventListener('click', () => {
             this.controller.addList({ title: '', id: 0, issues: [] });
             this.selectDropList(0);
-            // this.setListeners();
-
             this.focusInput();
         });
         
         this.content = document.querySelector('.content__body');
+    }
+
+    onChange() {
+        // add some style for createList btn
+        if (!window.location.hash) {
+            document.querySelector('.header__create-list-btn').disabled = false;
+            this.controller.preDraw()
+            this.setListeners();
+        } else {
+            document.querySelector('.header__create-list-btn').disabled = true;
+            this.controller.openDescription(window.location.hash[1], window.location.hash[3]);
+        }
     }
 
     setDisabled(data) {
@@ -81,9 +95,6 @@ class View {
         textInput = parent.querySelector('.input-text'),
         boardScroll = parent.querySelector('.board__list-wrap');
         e.target.classList.toggle('send');
-        // if (!e.target.classList.toggle('send')) {
-        //     // this.iniText(textInput);
-        // }
         this.selectDropList(parent.id);
         boardScroll.scrollTop = boardScroll.scrollHeight;
         textInput.focus();
@@ -149,10 +160,10 @@ class View {
         })
     }
 
-    drawBoardTask(data) {
+    drawBoardTask(data, listId) {
         return `
             <li class="board__item" id=${data.id}>
-                <a class="board__link" href="#">${data.title}</a>
+                <a class="board__link" href="#${listId}-${data.id}">${data.title}</a>
             </li>
         `
     }
@@ -167,7 +178,7 @@ class View {
 
     switchBoard(e) {
         if (!e.target.classList.contains('drop-list__link')) return;
-
+        
         document.querySelectorAll('.board').forEach((board, index) => {
             if (e.currentTarget.id === board.id) this.controller.switchBoard(index, e.target.id);
         })
@@ -186,7 +197,7 @@ class View {
                 </header>
                 <div class="board__list-wrap">
                     <ul class="board__list">
-                        ${board.issues.map(this.drawBoardTask).join('')}
+                        ${board.issues.map(task => this.drawBoardTask(task, board.id)).join('')}
                     </ul>
                     <footer class="board__footer">
                     ${
@@ -224,7 +235,7 @@ class View {
         data.forEach((list, index) => {
             boards[index].querySelector('.board__list').innerHTML = '';
             list.issues.forEach(task => {
-                boards[index].querySelector('.board__list').innerHTML += this.drawBoardTask(task);
+                boards[index].querySelector('.board__list').innerHTML += this.drawBoardTask(task, list.id);
             })
         })
 
@@ -258,6 +269,7 @@ class View {
             </div>
         </div>
         `
+        document.querySelector('.description__delete-btn').addEventListener('click', () => window.location.hash = '');
         document.querySelector('.textarea').addEventListener('input', this.getTextAreaValue);
         document.querySelector('.textarea').addEventListener('input', (e) => {
             document.querySelector('.description__text').innerHTML = e.target.value;
@@ -267,6 +279,7 @@ class View {
     }
 
     getTextAreaValue() {
+        // i guess i need to save these values before closing desc window;
         return {
             idList: document.querySelector('.description').id,
             idBoard: document.querySelector('.description__text').id,
@@ -283,16 +296,9 @@ class View {
         }.bind(this);
     }
 
-    openDescription(e) {
-        if (!e.target.classList.contains('board__link')) return;
-
-        this.controller.openDescription(e.currentTarget.id, e.target.parentNode.id);
-    }
-
     setListeners() {
         document.querySelectorAll('.board').forEach((board, i)=> {
             board.querySelector('.board__setting').addEventListener('click', this.deleteList.bind(this));
-            board.addEventListener('click', this.openDescription.bind(this));
             if (i !== 0) {
                 board.addEventListener('click', this.showDropButton.bind(this));
                 board.addEventListener('click', this.switchBoard.bind(this)); //bind
@@ -307,8 +313,8 @@ class View {
                     this.selectDropList(0);
                 })
                 board.addEventListener('click', (e)=> {
-                    if (!e.target.classList.contains('send')) return;
-                    
+                    if (!e.target.classList.contains('send')) return console.log(1);
+
                     this.iniText(e.currentTarget.querySelector('.input-text'));
                 });
                 board.addEventListener('click', this.showBoardInput.bind(this));

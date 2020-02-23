@@ -204,6 +204,10 @@ a {
     color: #000000;
 }
 
+.board__link:hover {
+    text-decoration: underline;
+}
+
 .board__add-card {
     min-width: 102px;
     min-height: 29px;
@@ -356,7 +360,7 @@ a {
     margin: 0 auto;
     flex-grow: 1;
     max-width: 1500px;
-    height: 800px;
+    height: 700px;
     background: #FFFFFF;
     border-radius: 5px;
     padding: 22px 28px;
@@ -391,7 +395,6 @@ a {
 .description__text-wrap {
     display: flex;
     /* flex-grow: 1; */
-    background: wheat;
     max-width: 600px;
     min-width: 300px;
     flex-basis: 100px;
@@ -458,6 +461,7 @@ a {
     display: none;
   }
   .content__body {
+    margin: 0;
     flex-direction: column;
     justify-content: center;
     align-items: center;
