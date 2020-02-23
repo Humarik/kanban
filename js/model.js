@@ -61,6 +61,22 @@ class Model {
         this.mediator.publish('setDisabled', this.dataMock);
     }
 
+    openDescription(listId, boardId) {
+        const selectedList = this.dataMock.find(list => list.id === +listId);
+        const selectedBoard = selectedList.issues.find(board => board.id === +boardId)
+
+        this.mediator.publish('drawDescription', { selectedList, ...selectedBoard });
+    }
+
+    addDescription({idList, idBoard, text}) {
+        const selectedList = this.dataMock.find(list => list.id === +idList);
+        const selectedBoard = selectedList.issues.find(board => board.id === +idBoard)
+        selectedBoard.desc = text;
+
+        localStorage.setItem('data', JSON.stringify(this.dataMock));
+        console.log(selectedBoard);
+    }
+
     sendLists() {
         this.mediator.publish('createList', this.dataMock);
         this.mediator.publish('setDisabled', this.dataMock);

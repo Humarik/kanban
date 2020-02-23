@@ -3,17 +3,24 @@ class View {
         this.controller = controller;
         this.mediator = mediator;
         this.createListButton = document.querySelector('.header__create-list-btn');
+
         this.addList = this.addList.bind(this);
         this.drawList = this.drawList.bind(this);
         this.initDrawTask = this.initDrawTask.bind(this);
         this.setDisabled = this.setDisabled.bind(this);
+        this.drawDescription = this.drawDescription.bind(this);
+        this.getTextAreaValue = this.getTextAreaValue.bind(this);
+        this.expandedGetAreaValue = this.expandedGetAreaValue.bind(this);
 
         this.mediator.addListener('drawTask', this.initDrawTask);
         this.mediator.addListener('createList', this.drawList);
         this.mediator.addListener('setDisabled', this.setDisabled);
+        this.mediator.addListener('drawDescription', this.drawDescription);
 
         this.controller.preDraw()
         this.setListeners();
+
+        this.getTextAreaValue = this.expandedGetAreaValue(this.getTextAreaValue);
 
         this.createListButton.addEventListener('click', () => {
             this.controller.addList({ title: '', id: 0, issues: [] });
@@ -230,9 +237,62 @@ class View {
 
     }
 
+    drawDescription(data) {
+        document.querySelector('.content__body').innerHTML = `
+        <div class="description" id=${data.selectedList.id}>
+            <header class="description__header">
+                <h2 class="description__title">${data.title}</h2>
+                <button class="description__delete-btn"></button>
+            </header>
+            <div class="description__content">
+                <div class="description__text-wrap">
+                    <p class="description__text" id=${data.id}> 
+                        ${data.desc === ''
+                        ? 'please take me on these courses <3'
+                        : data.desc} 
+                    </p>
+                </div>
+                <div class="description__textarea-wrap">
+                    <textarea class="textarea"></textarea>
+                </div>
+            </div>
+        </div>
+        `
+        document.querySelector('.textarea').addEventListener('input', this.getTextAreaValue);
+        document.querySelector('.textarea').addEventListener('input', (e) => {
+            document.querySelector('.description__text').innerHTML = e.target.value;
+            document.querySelector('.textarea').style.height = 'auto';
+            document.querySelector('.textarea').style.height = e.target.scrollHeight + 'px';
+        });
+    }
+
+    getTextAreaValue() {
+        return {
+            idList: document.querySelector('.description').id,
+            idBoard: document.querySelector('.description__text').id,
+            text: [document.querySelector('.textarea').value]
+        }
+    }
+
+    expandedGetAreaValue(func) {
+        return function () {
+            const index = setTimeout(() => {
+                this.controller.addDescription(func())
+            }, 3000);
+            if (index > 1) clearTimeout(index - 1);
+        }.bind(this);
+    }
+
+    openDescription(e) {
+        if (!e.target.classList.contains('board__link')) return;
+
+        this.controller.openDescription(e.currentTarget.id, e.target.parentNode.id);
+    }
+
     setListeners() {
         document.querySelectorAll('.board').forEach((board, i)=> {
             board.querySelector('.board__setting').addEventListener('click', this.deleteList.bind(this));
+            board.addEventListener('click', this.openDescription.bind(this));
             if (i !== 0) {
                 board.addEventListener('click', this.showDropButton.bind(this));
                 board.addEventListener('click', this.switchBoard.bind(this)); //bind

@@ -348,6 +348,80 @@ a {
     cursor: default;
 }
 
+.description {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    margin: 0 auto;
+    flex-grow: 1;
+    max-width: 1500px;
+    height: 800px;
+    background: #FFFFFF;
+    border-radius: 5px;
+    padding: 22px 28px;
+}
+
+.description__header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.description__delete-btn {
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    right: 18px;
+    top: 15px;
+    border: none;
+    background: none;
+    background: url(../img/cancel.svg);
+    font-size: large;
+    cursor: pointer;
+}
+
+.description__content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-top: 35px;
+}
+
+.description__text-wrap {
+    display: flex;
+    /* flex-grow: 1; */
+    background: wheat;
+    max-width: 600px;
+    min-width: 300px;
+    flex-basis: 100px;
+}
+
+.description__text {
+    width: 100%;
+    word-wrap:break-word;
+    font-size: 18px;
+    line-height: 21px;
+}
+
+.description__textarea-wrap {
+    min-width: 300px;
+    background: yellowgreen;
+    display: flex;
+    justify-content: flex-end;
+    /* flex-grow: 1; */
+    text-align: right;
+    max-height: 100%;
+}
+
+.textarea {
+    min-height: 40px;
+    word-wrap:break-word;
+    width: 100%;
+    resize: none;
+    overflow:hidden;
+}
+
 @font-face {
     font-family: 'Roboto';
     src: url(../fonts/Roboto-Light.ttf);
@@ -365,9 +439,20 @@ a {
     justify-content: center;
   }
 
-  /* .content__board {
-    margin: 0;
-  } */
+  .description__content {
+    justify-content: center;
+    align-items: stretch;
+  }
+
+  .description__text-wrap {
+    max-width: 200px;
+    order: 2;
+  }
+
+  .description__textarea-wrap {
+    order: 1;
+    max-width: 200px;
+  }
 
   .header__main-title {
     display: none;
@@ -378,12 +463,3 @@ a {
     align-items: center;
   }
 }
-
-
-/* .content__board:last-child {
-    margin: 10px 0 10px 0;
-}
-
-.content__board:first-child {
-    margin: 10px 10px 10px 0;
-} */

@@ -23,6 +23,14 @@ class Controller {
         this.model.switchBoard(index, boardId);
     }
 
+    openDescription(listId, boardId) {
+        this.model.openDescription(listId, boardId);
+    }
+
+    addDescription(objDescription) {
+        this.model.addDescription(objDescription);
+    }
+
     preDraw() {
         this.model.sendLists()
     }
