@@ -22,7 +22,15 @@ class Model {
                 id: 1,
                 issues: []
             }
-        ]
+        ];
+        
+        this.id = JSON.parse(localStorage.getItem('id')) || 0;
+    }
+
+    getId() {
+        this.id++
+        localStorage.setItem('id', JSON.stringify(this.id));
+        return this.id;
     }
 
     addList(obj) {
@@ -31,6 +39,7 @@ class Model {
         localStorage.setItem('data', JSON.stringify(this.dataMock));
         this.mediator.publish('createList', this.dataMock);
         this.mediator.publish('setDisabled', this.dataMock);
+        this.mediator.publish('counterTasks', this.dataMock);
     }
 
     deleteList(id) {
@@ -38,14 +47,17 @@ class Model {
         localStorage.setItem('data', JSON.stringify(this.dataMock));
         this.mediator.publish('createList', this.dataMock);
         this.mediator.publish('setDisabled', this.dataMock);
+        this.mediator.publish('counterTasks', this.dataMock);
     }
 
     addTask(obj) {
-        obj.id = this.getTaskId(this.dataMock[0].issues);
+        // obj.id = this.getTaskId(this.dataMock[0].issues);
+        obj.id = this.getId();
         this.dataMock[0].issues.push(obj);
         localStorage.setItem('data', JSON.stringify(this.dataMock));
         this.mediator.publish('drawTask', this.dataMock);
         this.mediator.publish('setDisabled', this.dataMock);
+        this.mediator.publish('counterTasks', this.dataMock);
 
         // this.mediator.publish('drawTask', this.dataMock[0].issues);
 
@@ -59,12 +71,13 @@ class Model {
         localStorage.setItem('data', JSON.stringify(this.dataMock));
         this.mediator.publish('drawTask', this.dataMock);
         this.mediator.publish('setDisabled', this.dataMock);
+        this.mediator.publish('counterTasks', this.dataMock);
     }
 
     openDescription(listId, boardId) {
         const selectedList = this.dataMock.find(list => list.id === +listId);
         const selectedBoard = selectedList.issues.find(board => board.id === +boardId)
-
+        console.log(selectedList, selectedBoard);
         this.mediator.publish('drawDescription', { selectedList, ...selectedBoard });
     }
 
@@ -79,6 +92,7 @@ class Model {
     sendLists() {
         this.mediator.publish('createList', this.dataMock);
         this.mediator.publish('setDisabled', this.dataMock);
+        this.mediator.publish('counterTasks', this.dataMock);
     }
 
     getListId(data){

@@ -138,14 +138,15 @@ a {
     margin: 12px 12px 10px 12px;
 }
 
-/* .board__header:hover .board__setting-nav {
-    position: relative;
-    display: block;
-} */
-
 .board__title {
+    max-width: 200px;
     font-size: 18px;
     line-height: 21px;
+    word-break: break-all;
+}
+
+.board__setting {
+    height: 21px;
 }
 
 .setting:hover .setting__list-wrap {
@@ -165,12 +166,11 @@ a {
     color: #FFFFFF;
 }
 
-
 .setting__list-wrap {
     position: absolute;
     width: 75px;
     min-height: 60px;
-    top: 100%;
+    top: 25px;
     left: 80%;
     display: none;
     background: #ebecf0;
@@ -381,13 +381,6 @@ a {
     font-size: 15px;
 }
 
-.footer {
-    display: flex;
-    min-height: 55px;
-    background: #0067A3;
-    justify-content: space-between;
-}
-
 .board__add-card[disabled],
 .board__add-card[disabled]:hover {
     background: url(../img/minus.svg) no-repeat;
@@ -416,6 +409,11 @@ a {
 .description__header {
     display: flex;
     justify-content: space-between;
+}
+
+.description__title {
+    word-break: break-all;
+    padding-right: 10px;
 }
 
 .description__delete-btn {
@@ -478,6 +476,22 @@ a {
     color: #FFFFFF;
     font-size: large;
     margin: 0 auto;
+}
+
+.footer {
+    display: flex;
+    min-height: 55px;
+    background: #0067A3;
+    justify-content: space-between;
+}
+
+.footer__info {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    line-height: 21px;
+    color: #FFFFFF;
+    padding: 0 20px;
 }
 
 @font-face {

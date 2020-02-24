@@ -16,11 +16,14 @@ class View {
         this.getTextAreaValue = this.getTextAreaValue.bind(this);
         this.expandedGetAreaValue = this.expandedGetAreaValue.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.counterTasks = this.counterTasks.bind(this);
 
         this.mediator.addListener('drawTask', this.initDrawTask);
         this.mediator.addListener('createList', this.drawList);
         this.mediator.addListener('setDisabled', this.setDisabled);
         this.mediator.addListener('drawDescription', this.drawDescription);
+        this.mediator.addListener('counterTasks', this.counterTasks);
+
 
         window.onload = () => {
             this.onChange();
@@ -44,7 +47,7 @@ class View {
         if (!window.location.hash) {
             document.title = 'Awesome kanban board';
             document.querySelector('.header__create-list-btn').disabled = false;
-            this.controller.preDraw()
+            this.controller.preDraw();
             this.setListeners();
         } else {
             document.querySelector('.header__create-list-btn').disabled = true;
@@ -218,7 +221,7 @@ class View {
                     ${
                         i === 0
                         ? ` <div class="board__input">
-                                <input class="input-text" placeholder="enter your task">
+                                <input class="input-text" placeholder="enter your task" maxlength="38">
                             </div>`
                         : ` <div class="drop-list">
                                 <button class="drop-list__btn"></button>
@@ -323,6 +326,14 @@ class View {
             }, 3000);
             if (index > 1) clearTimeout(index - 1);
         }.bind(this);
+    }
+
+    counterTasks(data) {
+        document.querySelector('.active').innerHTML = 'Active tasks: ' + (data.length === 0 ? 0 : data[0].issues.length);
+
+        data.length <= 1
+        ? document.querySelector('.finished').innerHTML = 'Finished tasks: 0'
+        : document.querySelector('.finished').innerHTML = 'Finished tasks: ' + (data.length === 0 ? 0 : data[data.length - 1].issues.length);
     }
 
     setListeners() {
