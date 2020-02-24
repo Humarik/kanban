@@ -74,7 +74,6 @@ class Model {
         selectedBoard.desc = text;
 
         localStorage.setItem('data', JSON.stringify(this.dataMock));
-        console.log(selectedBoard);
     }
 
     sendLists() {

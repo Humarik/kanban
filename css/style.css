@@ -132,17 +132,27 @@ a {
 }
 
 .board__header {
+    position: relative;
     display: flex;
     justify-content: space-between;
     margin: 12px 12px 10px 12px;
 }
+
+/* .board__header:hover .board__setting-nav {
+    position: relative;
+    display: block;
+} */
 
 .board__title {
     font-size: 18px;
     line-height: 21px;
 }
 
-.board__setting {
+.setting:hover .setting__list-wrap {
+    display: block;
+}
+
+.setting-btn {
     background: none;
     border: none;
     padding: 0;
@@ -151,8 +161,43 @@ a {
     cursor: pointer;
 }
 
-.board__setting:hover {
+.setting-btn:hover {
     color: #FFFFFF;
+}
+
+
+.setting__list-wrap {
+    position: absolute;
+    width: 75px;
+    min-height: 60px;
+    top: 100%;
+    left: 80%;
+    display: none;
+    background: #ebecf0;
+    border: 2px solid #FFFFFF;
+    border-radius: 3px;
+}
+
+.setting__list-wrap::after {
+    content: ''; 
+    position: absolute;
+    left: 30px; 
+    top: -20px;
+    border: 10px solid transparent;
+    border: 10px solid transparent;	
+    border-bottom: 10px solid #FFFFFF;
+
+}
+
+.setting__btn-delete {
+    width: 100%;
+    height: 30px;
+    border: none;
+    background: none;
+}
+
+.setting__btn-delete:hover {
+    background: #FFFFFF;
 }
 
 .board__list-wrap {
@@ -202,7 +247,9 @@ a {
     font-size: 18px;
     line-height: 21px;
     color: #000000;
+    word-wrap:break-word;
 }
+
 
 .board__link:hover {
     text-decoration: underline;
@@ -421,8 +468,16 @@ a {
     min-height: 40px;
     word-wrap:break-word;
     width: 100%;
+    font-size: 20px;
+    padding: 5px;
     resize: none;
     overflow:hidden;
+}
+
+.message {
+    color: #FFFFFF;
+    font-size: large;
+    margin: 0 auto;
 }
 
 @font-face {

@@ -4,6 +4,10 @@ class View {
         this.mediator = mediator;
         this.createListButton = document.querySelector('.header__create-list-btn');
 
+        this.idList;
+        this.idBoard;
+        this.text;
+
         this.addList = this.addList.bind(this);
         this.drawList = this.drawList.bind(this);
         this.initDrawTask = this.initDrawTask.bind(this);
@@ -38,6 +42,7 @@ class View {
     onChange() {
         // add some style for createList btn
         if (!window.location.hash) {
+            document.title = 'Awesome kanban board';
             document.querySelector('.header__create-list-btn').disabled = false;
             this.controller.preDraw()
             this.setListeners();
@@ -188,12 +193,22 @@ class View {
 
     drawList(data) {
         document.querySelector('.content__body').innerHTML = '';
+        if (!data.length) document.querySelector('.content__body').innerHTML = '<p class="message">You should use Create new list button<p>'
         data.forEach((board, i) => {
             document.querySelector('.content__body').innerHTML += `
                <section class="board content__board" id=${board.id}>
                 <header class="board__header">
                     <h2 class="board__title">${board.title}</h2>
-                    <button class="board__setting">•••</button>
+                    <div class='setting board__setting'>
+                        <button class="setting-btn">•••</button>
+                        <div class="setting__list-wrap">
+                            <ul class="setting__list">
+                                <li class="setting__item">
+                                    <button class="setting__btn-delete">delete</button>
+                                </li>
+                            <ul>
+                        </div>
+                    <div>
                 </header>
                 <div class="board__list-wrap">
                     <ul class="board__list">
@@ -221,11 +236,12 @@ class View {
             </section>
             `
         })
-        //${data[i - 1].issues.map(this.drawDropTask).join('')}
     }
 
     deleteList(e) {
-        this.controller.deleteList(e.target.parentNode.parentNode.id);
+        if (!e.target.classList.contains('setting__btn-delete')) return;
+
+        this.controller.deleteList(e.currentTarget.id);
         this.setListeners();
     }
 
@@ -258,32 +274,45 @@ class View {
             <div class="description__content">
                 <div class="description__text-wrap">
                     <p class="description__text" id=${data.id}> 
-                        ${data.desc === ''
+                        ${data.desc == false
                         ? 'please take me on these courses <3'
                         : data.desc} 
                     </p>
                 </div>
-                <div class="description__textarea-wrap">
-                    <textarea class="textarea"></textarea>
-                </div>
+                ${data.desc == false
+                ?   `<div class="description__textarea-wrap">
+                        <textarea class="textarea"></textarea>
+                    </div>`
+                :   ''}
             </div>
         </div>
         `
+
+        //maybe need to add new f to combine these listeners
         document.querySelector('.description__delete-btn').addEventListener('click', () => window.location.hash = '');
+
+        if (!document.querySelector('.textarea')) return;
+
+        document.title = data.title;
+        document.querySelector('.textarea').focus();
+
+        this.idList = document.querySelector('.description').id,
+        this.idBoard = document.querySelector('.description__text').id;
+
         document.querySelector('.textarea').addEventListener('input', this.getTextAreaValue);
         document.querySelector('.textarea').addEventListener('input', (e) => {
             document.querySelector('.description__text').innerHTML = e.target.value;
+            this.text = e.target.value;
             document.querySelector('.textarea').style.height = 'auto';
             document.querySelector('.textarea').style.height = e.target.scrollHeight + 'px';
         });
     }
 
     getTextAreaValue() {
-        // i guess i need to save these values before closing desc window;
         return {
-            idList: document.querySelector('.description').id,
-            idBoard: document.querySelector('.description__text').id,
-            text: [document.querySelector('.textarea').value]
+            idList: this.idList,
+            idBoard: this.idBoard,
+            text: [this.text]
         }
     }
 
@@ -298,7 +327,7 @@ class View {
 
     setListeners() {
         document.querySelectorAll('.board').forEach((board, i)=> {
-            board.querySelector('.board__setting').addEventListener('click', this.deleteList.bind(this));
+            board.addEventListener('click', this.deleteList.bind(this));
             if (i !== 0) {
                 board.addEventListener('click', this.showDropButton.bind(this));
                 board.addEventListener('click', this.switchBoard.bind(this)); //bind
@@ -313,7 +342,7 @@ class View {
                     this.selectDropList(0);
                 })
                 board.addEventListener('click', (e)=> {
-                    if (!e.target.classList.contains('send')) return console.log(1);
+                    if (!e.target.classList.contains('send')) return;
 
                     this.iniText(e.currentTarget.querySelector('.input-text'));
                 });
