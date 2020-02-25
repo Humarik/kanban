@@ -77,7 +77,7 @@ class Model {
     openDescription(listId, boardId) {
         const selectedList = this.dataMock.find(list => list.id === +listId);
         const selectedBoard = selectedList.issues.find(board => board.id === +boardId)
-        console.log(selectedList, selectedBoard);
+
         this.mediator.publish('drawDescription', { selectedList, ...selectedBoard });
     }
 

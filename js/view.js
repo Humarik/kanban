@@ -4,6 +4,7 @@ class View {
         this.mediator = mediator;
         this.createListButton = document.querySelector('.header__create-list-btn');
 
+        this.board;
         this.idList;
         this.idBoard;
         this.text;
@@ -170,7 +171,7 @@ class View {
 
     drawBoardTask(data, listId) {
         return `
-            <li class="board__item" id=${data.id}>
+            <li class="board__item" id=${data.id} draggable='true'>
                 <a class="board__link" href="#${listId}-${data.id}">${data.title}</a>
             </li>
         `
@@ -221,7 +222,7 @@ class View {
                     ${
                         i === 0
                         ? ` <div class="board__input">
-                                <input class="input-text" placeholder="enter your task" maxlength="38">
+                                <input class="input-text" placeholder="enter your task" maxlength="50">
                             </div>`
                         : ` <div class="drop-list">
                                 <button class="drop-list__btn"></button>
@@ -284,7 +285,7 @@ class View {
                 </div>
                 ${data.desc == false
                 ?   `<div class="description__textarea-wrap">
-                        <textarea class="textarea"></textarea>
+                        <textarea class="textarea" placeholder="enter your description" maxlength="400"></textarea>
                     </div>`
                 :   ''}
             </div>
@@ -323,7 +324,7 @@ class View {
         return function () {
             const index = setTimeout(() => {
                 this.controller.addDescription(func())
-            }, 3000);
+            }, 2000);
             if (index > 1) clearTimeout(index - 1);
         }.bind(this);
     }
@@ -336,9 +337,53 @@ class View {
         : document.querySelector('.finished').innerHTML = 'Finished tasks: ' + (data.length === 0 ? 0 : data[data.length - 1].issues.length);
     }
 
+    dragStart(e) {
+        if (!e.target.classList.contains('board__item')) return;
+
+        document.querySelectorAll('.board').forEach((board, index) => {
+            if (e.currentTarget.id === board.id) {
+                this.idList = index + 1;
+                this.idBoard = e.target.id;
+                this.board = e.target;
+            }
+        })
+
+        setTimeout(() => {
+            e.target.classList.add('hide');
+        }, 0);
+    }
+
+    dragEnd(e) {
+        if (!e.target.classList.contains('board__item')) return;
+
+        e.target.classList.remove('hide');
+    }
+
+    dragOver(e) {
+        e.preventDefault();
+    }
+
+    dragDrop(e) {
+        let indexList;
+        document.querySelectorAll('.board').forEach((board, index) => {
+            if (e.currentTarget.id === board.id) indexList = index;
+        })
+        
+        if (this.idList === indexList) {
+            e.currentTarget.querySelector('.drop-list').classList.remove('on');
+            this.controller.switchBoard(indexList, this.board.id);
+        }
+    }
+
     setListeners() {
         document.querySelectorAll('.board').forEach((board, i)=> {
             board.addEventListener('click', this.deleteList.bind(this));
+
+            board.addEventListener('dragstart', this.dragStart.bind(this));
+            board.addEventListener('dragend', this.dragEnd.bind(this));
+            board.addEventListener('dragover', this.dragOver.bind(this));
+            board.addEventListener('drop', this.dragDrop.bind(this));
+
             if (i !== 0) {
                 board.addEventListener('click', this.showDropButton.bind(this));
                 board.addEventListener('click', this.switchBoard.bind(this)); //bind

@@ -146,6 +146,7 @@ a {
 }
 
 .board__setting {
+    cursor: pointer;
     height: 21px;
 }
 
@@ -160,10 +161,6 @@ a {
     font-size: 18px;
     line-height: 21px;
     cursor: pointer;
-}
-
-.setting-btn:hover {
-    color: #FFFFFF;
 }
 
 .setting__list-wrap {
@@ -194,6 +191,8 @@ a {
     height: 30px;
     border: none;
     background: none;
+    cursor: pointer;
+    font-size: 17px;
 }
 
 .setting__btn-delete:hover {
@@ -232,6 +231,7 @@ a {
     padding: 8px;
     box-sizing: border-box;
     transition: transform 0.1s;
+    cursor: move;
 }
 
 .board__item:last-child {
@@ -483,6 +483,7 @@ a {
     min-height: 55px;
     background: #0067A3;
     justify-content: space-between;
+    padding: 0 20px;
 }
 
 .footer__info {
@@ -491,7 +492,10 @@ a {
     font-size: 18px;
     line-height: 21px;
     color: #FFFFFF;
-    padding: 0 20px;
+}
+
+.hide {
+    display: none;
 }
 
 @font-face {
@@ -509,6 +513,10 @@ a {
 @media (max-width: 700px) {
   .header {
     justify-content: center;
+  }
+
+  .footer {
+    padding: 0;
   }
 
   .description__content {
