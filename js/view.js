@@ -46,25 +46,8 @@ class View {
             this.setListeners();
         } else {
             document.querySelector('.header__create-list-btn').disabled = true;
-            const hash = this.initHash(window.location.hash);
-            this.controller.openDescription(hash.list.slice(1), hash.task.slice(1));
+            this.controller.openDescription(window.location.hash.slice(1));
         }
-    }
-
-    initHash([...hash]) {
-        let list = '';
-        let task = '';
-        let isFlag = false;
-        hash.forEach(item => {
-            if (!isFlag && item !== "-") {
-                list += item;
-            }
-            else {
-                isFlag = true;
-                task += item;
-            }
-        })
-        return {list, task}
     }
 
     setDisabled(data) {
@@ -180,10 +163,10 @@ class View {
         })
     }
 
-    drawBoardTask(data, listId) {
+    drawBoardTask(data) {
         return `
             <li class="board__item" id=${data.id} draggable='true'>
-                <a class="board__link" href="#${listId}-${data.id}">${data.title}</a>
+                <a class="board__link" href="#${data.id}">${data.title}</a>
             </li>
         `
     }
@@ -227,7 +210,7 @@ class View {
                 </header>
                 <div class="board__list-wrap">
                     <ul class="board__list">
-                        ${board.issues.map(task => this.drawBoardTask(task, board.id)).join('')}
+                        ${board.issues.map(this.drawBoardTask).join('')}
                     </ul>
                     <footer class="board__footer">
                     ${
@@ -265,9 +248,7 @@ class View {
 
         data.forEach((list, index) => {
             boards[index].querySelector('.board__list').innerHTML = '';
-            list.issues.forEach(task => {
-                boards[index].querySelector('.board__list').innerHTML += this.drawBoardTask(task, list.id);
-            })
+            boards[index].querySelector('.board__list').innerHTML += list.issues.map(this.drawBoardTask).join('');
         })
 
         boards.forEach((board, i) => {
@@ -281,7 +262,7 @@ class View {
 
     drawDescription(data) {
         document.querySelector('.content__body').innerHTML = `
-        <div class="description" id=${data.selectedList.id}>
+        <div class="description">
             <header class="description__header">
                 <h2 class="description__title">${data.title}</h2>
                 <button class="description__delete-btn"></button>
@@ -308,7 +289,6 @@ class View {
             if (!document.querySelector('.textarea')) return window.location.hash = '';
 
             this.controller.addDescription({
-                idList: document.querySelector('.description').id,
                 idBoard: document.querySelector('.description__text').id,
                 text: [document.querySelector('.textarea').value]
             })

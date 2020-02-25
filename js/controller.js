@@ -23,8 +23,8 @@ class Controller {
         this.model.switchBoard(index, boardId);
     }
 
-    openDescription(listId, boardId) {
-        this.model.openDescription(listId, boardId);
+    openDescription(boardId) {
+        this.model.openDescription(boardId);
     }
 
     addDescription(objDescription) {

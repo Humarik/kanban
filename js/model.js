@@ -74,17 +74,21 @@ class Model {
         this.mediator.publish('counterTasks', this.dataMock);
     }
 
-    openDescription(listId, boardId) {
-        const selectedList = this.dataMock.find(list => list.id === +listId);
-        const selectedBoard = selectedList.issues.find(board => board.id === +boardId)
-
-        this.mediator.publish('drawDescription', { selectedList, ...selectedBoard });
+    openDescription(boardId) {
+        this.dataMock.forEach(list => {
+            if (list.issues.some(board => board.id === +boardId)) {
+                this.mediator.publish('drawDescription', list.issues.find(board => board.id === +boardId));
+            }
+        })
     }
 
-    addDescription({idList, idBoard, text}) {
-        const selectedList = this.dataMock.find(list => list.id === +idList);
-        const selectedBoard = selectedList.issues.find(board => board.id === +idBoard)
-        selectedBoard.desc = text;
+    addDescription({idBoard, text}) {
+        this.dataMock.forEach(list => {
+            if (list.issues.some(board => board.id === +idBoard)) {
+                const selectedBoard = list.issues.find(board => board.id === +idBoard);
+                selectedBoard.desc = text;
+            }
+        })
 
         localStorage.setItem('data', JSON.stringify(this.dataMock));
     }
