@@ -7,15 +7,12 @@ class View {
         this.board;
         this.idList;
         this.idBoard;
-        this.text;
 
         this.addList = this.addList.bind(this);
         this.drawList = this.drawList.bind(this);
         this.initDrawTask = this.initDrawTask.bind(this);
         this.setDisabled = this.setDisabled.bind(this);
         this.drawDescription = this.drawDescription.bind(this);
-        this.getTextAreaValue = this.getTextAreaValue.bind(this);
-        this.expandedGetAreaValue = this.expandedGetAreaValue.bind(this);
         this.onChange = this.onChange.bind(this);
         this.counterTasks = this.counterTasks.bind(this);
 
@@ -25,14 +22,11 @@ class View {
         this.mediator.addListener('drawDescription', this.drawDescription);
         this.mediator.addListener('counterTasks', this.counterTasks);
 
-
         window.onload = () => {
             this.onChange();
         }
 
         window.addEventListener('hashchange', this.onChange);
-
-        this.getTextAreaValue = this.expandedGetAreaValue(this.getTextAreaValue);
 
         this.createListButton.addEventListener('click', () => {
             this.controller.addList({ title: '', id: 0, issues: [] });
@@ -52,8 +46,25 @@ class View {
             this.setListeners();
         } else {
             document.querySelector('.header__create-list-btn').disabled = true;
-            this.controller.openDescription(window.location.hash[1], window.location.hash[3]);
+            const hash = this.initHash(window.location.hash);
+            this.controller.openDescription(hash.list.slice(1), hash.task.slice(1));
         }
+    }
+
+    initHash([...hash]) {
+        let list = '';
+        let task = '';
+        let isFlag = false;
+        hash.forEach(item => {
+            if (!isFlag && item !== "-") {
+                list += item;
+            }
+            else {
+                isFlag = true;
+                task += item;
+            }
+        })
+        return {list, task}
     }
 
     setDisabled(data) {
@@ -293,40 +304,28 @@ class View {
         `
 
         //maybe need to add new f to combine these listeners
-        document.querySelector('.description__delete-btn').addEventListener('click', () => window.location.hash = '');
+        document.querySelector('.description__delete-btn').addEventListener('click', () => {
+            if (!document.querySelector('.textarea')) return window.location.hash = '';
+
+            this.controller.addDescription({
+                idList: document.querySelector('.description').id,
+                idBoard: document.querySelector('.description__text').id,
+                text: [document.querySelector('.textarea').value]
+            })
+
+            window.location.hash = '';
+        });
+        document.title = data.title;
 
         if (!document.querySelector('.textarea')) return;
 
-        document.title = data.title;
         document.querySelector('.textarea').focus();
 
-        this.idList = document.querySelector('.description').id,
-        this.idBoard = document.querySelector('.description__text').id;
-
-        document.querySelector('.textarea').addEventListener('input', this.getTextAreaValue);
         document.querySelector('.textarea').addEventListener('input', (e) => {
             document.querySelector('.description__text').innerHTML = e.target.value;
-            this.text = e.target.value;
             document.querySelector('.textarea').style.height = 'auto';
             document.querySelector('.textarea').style.height = e.target.scrollHeight + 'px';
         });
-    }
-
-    getTextAreaValue() {
-        return {
-            idList: this.idList,
-            idBoard: this.idBoard,
-            text: [this.text]
-        }
-    }
-
-    expandedGetAreaValue(func) {
-        return function () {
-            const index = setTimeout(() => {
-                this.controller.addDescription(func())
-            }, 2000);
-            if (index > 1) clearTimeout(index - 1);
-        }.bind(this);
     }
 
     counterTasks(data) {
@@ -386,7 +385,7 @@ class View {
 
             if (i !== 0) {
                 board.addEventListener('click', this.showDropButton.bind(this));
-                board.addEventListener('click', this.switchBoard.bind(this)); //bind
+                board.addEventListener('click', this.switchBoard.bind(this));
                 board.querySelector('.drop-list').addEventListener('mouseover', this.showDropList);
                 board.querySelector('.drop-list').addEventListener('mouseout', this.hideDropList);
             }else {
