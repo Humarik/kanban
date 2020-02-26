@@ -23,14 +23,6 @@ class Model {
                 issues: []
             }
         ];
-        
-        this.id = JSON.parse(localStorage.getItem('id')) || 0;
-    }
-
-    getId() {
-        this.id++
-        localStorage.setItem('id', JSON.stringify(this.id));
-        return this.id;
     }
 
     addList(obj) {
@@ -51,17 +43,11 @@ class Model {
     }
 
     addTask(obj) {
-        // obj.id = this.getTaskId(this.dataMock[0].issues);
-        obj.id = this.getId();
         this.dataMock[0].issues.push(obj);
         localStorage.setItem('data', JSON.stringify(this.dataMock));
         this.mediator.publish('drawTask', this.dataMock);
         this.mediator.publish('setDisabled', this.dataMock);
         this.mediator.publish('counterTasks', this.dataMock);
-
-        // this.mediator.publish('drawTask', this.dataMock[0].issues);
-
-        // this.mediator.publish('createList', this.dataMock);
     }
 
     switchBoard(index, boardId) {
@@ -105,10 +91,5 @@ class Model {
             if (data[i].id > id) id = data[i].id;
         }
         return id + 1;
-    }
-
-    getTaskId(data) {
-        const id = data.length === 0 ? 1 : data[data.length - 1].id + 1;
-        return id;
     }
 }

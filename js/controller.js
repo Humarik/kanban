@@ -1,8 +1,15 @@
 class Controller {
     constructor(model){
-       this.model = model;
+        this.model = model;
+        this.id = JSON.parse(localStorage.getItem('id')) || 0;
     }
     
+    getId() {
+        this.id++
+        localStorage.setItem('id', JSON.stringify(this.id));
+        return this.id;
+    }
+
     addList(obj) {
         this.model.addList(obj);
     }
@@ -14,7 +21,7 @@ class Controller {
     addTask(text) {
         this.model.addTask({
             title: text,
-            id: null, 
+            id: this.getId(),
             desc: ''
         });
     }

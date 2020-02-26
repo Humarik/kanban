@@ -38,7 +38,6 @@ class View {
     }
 
     onChange() {
-        // add some style for createList btn
         if (!window.location.hash) {
             document.title = 'Awesome kanban board';
             document.querySelector('.header__create-list-btn').disabled = false;
@@ -106,7 +105,6 @@ class View {
     iniText(textInput) {
         if (!textInput.value.trim()) return alert('you need to write something');
 
-        // this.controller.addTask({ title: textInput.value, id: '1', desc: '' });
         this.controller.addTask(textInput.value);
         textInput.value = '';
     }
@@ -283,26 +281,29 @@ class View {
             </div>
         </div>
         `
+        this.setDescListeners(data);
+    }
 
-        //maybe need to add new f to combine these listeners
+    setDescListeners(data) {
+        document.title = data.title;
+
         document.querySelector('.description__delete-btn').addEventListener('click', () => {
             if (!document.querySelector('.textarea')) return window.location.hash = '';
 
             this.controller.addDescription({
                 idBoard: document.querySelector('.description__text').id,
-                text: [document.querySelector('.textarea').value]
+                text: [document.querySelector('.textarea').value.trim()]
             })
 
             window.location.hash = '';
         });
-        document.title = data.title;
 
         if (!document.querySelector('.textarea')) return;
 
         document.querySelector('.textarea').focus();
 
         document.querySelector('.textarea').addEventListener('input', (e) => {
-            document.querySelector('.description__text').innerHTML = e.target.value;
+            document.querySelector('.description__text').innerHTML = e.target.value.trim();
             document.querySelector('.textarea').style.height = 'auto';
             document.querySelector('.textarea').style.height = e.target.scrollHeight + 'px';
         });
