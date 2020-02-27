@@ -505,10 +505,23 @@ a {
 }
 
 .description__text-wrap {
+    cursor: pointer;
     display: flex;
     max-width: 600px;
     min-width: 300px;
     flex-basis: 100px;
+    padding: 5px;
+}
+
+.description__text-wrap[disabled]:hover {
+    cursor: default;
+    color: black;
+    background: #FFFFFF;
+}
+
+.description__text-wrap:hover {
+    background: #4997d2;
+    color: #FFFFFF;
 }
 
 .description__text {

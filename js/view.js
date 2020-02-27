@@ -266,7 +266,7 @@ class View {
                 <button class="description__delete-btn"></button>
             </header>
             <div class="description__content">
-                <div class="description__text-wrap">
+                <div class="description__text-wrap" title="Edit">
                     <p class="description__text" id=${data.id}> 
                         ${data.desc == false
                         ? 'please take me on these courses <3'
@@ -277,7 +277,9 @@ class View {
                 ?   `<div class="description__textarea-wrap">
                         <textarea class="textarea" placeholder="enter your description" maxlength="400"></textarea>
                     </div>`
-                :   ''}
+                :   `<div class="description__textarea-wrap">
+                        <textarea class="textarea hide" placeholder="enter your description" maxlength="400"></textarea>
+                    </div>`}
             </div>
         </div>
         `
@@ -285,28 +287,39 @@ class View {
     }
 
     setDescListeners(data) {
+        let text;
+        const textArea = document.querySelector('.textarea');
         document.title = data.title;
 
         document.querySelector('.description__delete-btn').addEventListener('click', () => {
-            if (!document.querySelector('.textarea')) return window.location.hash = '';
+            if (text === undefined) return window.location.hash = '';
 
             this.controller.addDescription({
                 idBoard: document.querySelector('.description__text').id,
-                text: [document.querySelector('.textarea').value.trim()]
+                text: [text]
             })
 
             window.location.hash = '';
         });
 
-        if (!document.querySelector('.textarea')) return;
-
-        document.querySelector('.textarea').focus();
-
-        document.querySelector('.textarea').addEventListener('input', (e) => {
+        textArea.addEventListener('input', (e) => {
             document.querySelector('.description__text').innerHTML = e.target.value.trim();
-            document.querySelector('.textarea').style.height = 'auto';
-            document.querySelector('.textarea').style.height = e.target.scrollHeight + 'px';
+            text = e.target.value.trim();
+            textArea.style.height = 'auto';
+            textArea.style.height = e.target.scrollHeight + 'px';
         });
+
+        if (!textArea.classList.contains('hide')) {
+            document.querySelector('.description__text-wrap').setAttribute('disabled', true);
+            document.querySelector('.description__text-wrap').setAttribute('title', '');
+            return;
+        }
+
+        document.querySelector('.description__text').addEventListener('click', (e) => {
+            textArea.classList.toggle('hide');
+            textArea.value = e.target.innerText;
+            textArea.focus();
+        })
     }
 
     counterTasks(data) {
