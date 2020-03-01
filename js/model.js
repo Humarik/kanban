@@ -48,6 +48,8 @@ class Model {
                 list.issues = list.issues.filter(board => board.id !== +id);
                 localStorage.setItem('data', JSON.stringify(this.dataMock));
                 this.mediator.publish('drawTask', this.dataMock);
+                this.mediator.publish('setDisabled', this.dataMock);
+                this.mediator.publish('counterTasks', this.dataMock);
             }
         })
     }
