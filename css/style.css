@@ -245,6 +245,7 @@ a {
     background: #ebecf0;
     border: 2px solid #FFFFFF;
     border-radius: 3px;
+    z-index: 1;
 }
 
 .setting__list-wrap::after {
