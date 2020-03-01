@@ -18,6 +18,10 @@ class Controller {
         this.model.deleteList(id);
     }
 
+    deleteBoard(id) {
+        this.model.deleteBoard(id);
+    }
+
     addTask(text) {
         this.model.addTask({
             title: text,

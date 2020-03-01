@@ -42,6 +42,16 @@ class Model {
         this.mediator.publish('counterTasks', this.dataMock);
     }
 
+    deleteBoard(id) {
+        this.dataMock.forEach(list => {
+            if(list.issues.some(board => board.id === +id)) {
+                list.issues = list.issues.filter(board => board.id !== +id);
+                localStorage.setItem('data', JSON.stringify(this.dataMock));
+                this.mediator.publish('drawTask', this.dataMock);
+            }
+        })
+    }
+
     addTask(obj) {
         this.dataMock[0].issues.push(obj);
         localStorage.setItem('data', JSON.stringify(this.dataMock));

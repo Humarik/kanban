@@ -296,6 +296,7 @@ a {
 }
 
 .board__item {
+    position: relative;
     min-height: 35px;
     background: #FFFFFF;
     border-radius: 5px;
@@ -322,6 +323,21 @@ a {
     word-wrap:break-word;
 }
 
+.board__delete-btn {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.board__delete-btn:hover {
+    background: #ebecf0;
+    color: #0079bf;
+    font-weight: bold;
+}
 
 .board__link:hover {
     text-decoration: underline;

@@ -165,6 +165,7 @@ class View {
         return `
             <li class="board__item" id=${data.id} draggable='true'>
                 <a class="board__link" href="#${data.id}">${data.title}</a>
+                <button class="board__delete-btn">X</button>
             </li>
         `
     }
@@ -239,6 +240,12 @@ class View {
 
         this.controller.deleteList(e.currentTarget.id);
         this.setListeners();
+    }
+
+    deleteBoard(e) {
+        if (!e.target.classList.contains('board__delete-btn')) return;
+
+        this.controller.deleteBoard(e.target.parentNode.id);
     }
 
     initDrawTask(data) {
@@ -371,6 +378,7 @@ class View {
     setListeners() {
         document.querySelectorAll('.board').forEach((board, i)=> {
             board.addEventListener('click', this.deleteList.bind(this));
+            board.addEventListener('click', this.deleteBoard.bind(this));
 
             board.addEventListener('dragstart', this.dragStart.bind(this));
             board.addEventListener('dragend', this.dragEnd.bind(this));
