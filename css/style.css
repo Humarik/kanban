@@ -302,7 +302,7 @@ a {
     background: #FFFFFF;
     border-radius: 5px;
     margin-bottom: 15px;
-    padding: 8px;
+    padding: 8px 20px 8px 8px;
     box-sizing: border-box;
     transition: transform 0.1s;
     cursor: move;
